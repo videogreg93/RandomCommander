@@ -40,27 +40,37 @@ fun Application.configureRouting() {
                     display = Display.table
                     margin = Margin(LinearDimension.auto)
                 }
+                h1 {
+                    margin = Margin(LinearDimension.auto)
+                    width = LinearDimension("100%")
+                    textAlign = TextAlign.center
+                    paddingBottom = LinearDimension("100px")
+                }
                 body {
                     display = Display.tableCell
                     verticalAlign = VerticalAlign.middle
                 }
                 rule(".commander") {
-                    width = LinearDimension("30%")
+                    width = LinearDimension("600px")
                 }
                 rule(".header") {
                     display = Display.flex
-                    flexDirection = FlexDirection.row
+                    justifyContent = JustifyContent.spaceAround
+                    flexWrap = FlexWrap.wrap
+                    maxWidth = LinearDimension("70%")
+                    margin = Margin(LinearDimension.auto)
                 }
                 rule(".allCards") {
                     display = Display.flex
+                    justifyContent = JustifyContent.center
                     flexDirection = FlexDirection.row
                     flexWrap = FlexWrap.wrap
                 }
                 rule(".allCardsItem") {
-                    width = LinearDimension("20%")
+                    width = LinearDimension("300px")
                 }
                 rule(".textAreaList") {
-                    width = LinearDimension("40%")
+                    width = LinearDimension("70%")
                     height = LinearDimension("400px")
                 }
             }
@@ -80,18 +90,23 @@ fun Application.configureRouting() {
                     h1 {
                         +deckData.name
                     }
-                    commanders.forEach {
-                        a {
-                            href = "https://api.scryfall.com/cards/${it.identifiers.scryfallId}?format=image"
-                            img {
-                                classes = setOf("commander")
-                                src = "https://api.scryfall.com/cards/${it.identifiers.scryfallId}?format=image"
+                    div {
+                        classes = setOf("header")
+                        commanders.forEach {
+                            a {
+                                href = "https://api.scryfall.com/cards/${it.identifiers.scryfallId}?format=image"
+                                img {
+                                    classes = setOf("commander")
+                                    src = "https://api.scryfall.com/cards/${it.identifiers.scryfallId}?format=image"
+                                }
                             }
                         }
+                        if (commanders.size == 1) {
+                            textArea(clipBoard)
+                        }
                     }
-                    textArea {
-                        classes = setOf("textAreaList")
-                        +clipBoard
+                    if (commanders.size > 1) {
+                        textArea(clipBoard, setOf("textAreaList"))
                     }
                     div {
                         classes = setOf("allCards")
@@ -107,5 +122,12 @@ fun Application.configureRouting() {
 
             }
         }
+    }
+}
+
+private fun FlowOrInteractiveOrPhrasingContent.textArea(clipBoard: String, classes: Set<String> = setOf()) {
+    textArea {
+        this.classes = classes
+        +clipBoard
     }
 }
